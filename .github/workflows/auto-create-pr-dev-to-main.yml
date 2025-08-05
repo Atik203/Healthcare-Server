@@ -46,7 +46,7 @@ jobs:
             echo "pr_exists=false" >> $GITHUB_OUTPUT
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Create Pull Request
         if: steps.check-pr.outputs.pr_exists == 'false'
@@ -81,7 +81,7 @@ jobs:
             
           echo "✅ Created new pull request"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Update existing PR
         if: steps.check-pr.outputs.pr_exists == 'true'
@@ -118,4 +118,4 @@ jobs:
             
           echo "✅ Updated existing pull request #${{ steps.check-pr.outputs.pr_number }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
