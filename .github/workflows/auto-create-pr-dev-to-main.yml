@@ -74,7 +74,6 @@ jobs:
             --head dev \
             --base main \
             --label "auto-generated" \
-            --label "development" \
             --assignee "Atik203"
             
           echo "✅ Created new pull request"
