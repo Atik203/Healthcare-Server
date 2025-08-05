@@ -25,16 +25,21 @@ jobs:
           echo "COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')" >> $GITHUB_ENV
           echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')" >> $GITHUB_ENV
           echo "COMMIT_URL=https://github.com/${{ github.repository }}/commit/$(git log -1 --pretty=format:'%H')" >> $GITHUB_ENV
-          echo "BRANCH_NAME=dev" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$(git log -1 --pretty=format:'%H')" >> $GITHUB_ENV
 
       - name: Check if PR already exists
         id: check-pr
         run: |
-          existing_pr=$(gh pr list --state open --head dev --base main --json number --jq '.[0].number')
-          if [ "$existing_pr" != "null" ] && [ "$existing_pr" != "" ]; then
+          # Check for existing open PR from dev to main
+          pr_data=$(gh pr list --head dev --base main --state open --limit 1 --json number 2>/dev/null || echo "[]")
+          pr_number=$(echo "$pr_data" | jq -r '.[0].number // empty')
+
+          if [ -n "$pr_number" ] && [ "$pr_number" != "null" ]; then
+            echo "Found existing PR #$pr_number"
             echo "pr_exists=true" >> $GITHUB_OUTPUT
-            echo "pr_number=$existing_pr" >> $GITHUB_OUTPUT
+            echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
           else
+            echo "No existing PR found"
             echo "pr_exists=false" >> $GITHUB_OUTPUT
           fi
         env:
@@ -50,7 +55,7 @@ jobs:
           **Author:** ${COMMIT_AUTHOR}
           **Source Branch:** dev
           **Target Branch:** main
-          **Commit URL:** [${COMMIT_URL}](${COMMIT_URL})
+          **Latest Commit:** [${COMMIT_HASH:0:7}](${COMMIT_URL})
 
           ### Changes Made
 
@@ -58,18 +63,21 @@ jobs:
 
           ### Auto-Merge Status
 
-          This pull request will be automatically merged after successful checks."
+          This pull request will be automatically merged after successful checks.
 
-          pr_number=$(gh pr create \
+          ---
+          *Auto-generated on $(date)*"
+
+          gh pr create \
             --title "Auto PR: ${COMMIT_MESSAGE}" \
             --body "$pr_body" \
             --head dev \
             --base main \
-            --label "auto-generated,development" \
-            --assignee "Atik203" \
-            --json number --jq '.number')
-
-          echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
+            --label "auto-generated" \
+            --label "development" \
+            --assignee "Atik203"
+            
+          echo "✅ Created new pull request"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -82,7 +90,7 @@ jobs:
           **Author:** ${COMMIT_AUTHOR}
           **Source Branch:** dev
           **Target Branch:** main
-          **Commit URL:** [${COMMIT_URL}](${COMMIT_URL})
+          **Latest Commit:** [${COMMIT_HASH:0:7}](${COMMIT_URL})
 
           ### Changes Made
 
@@ -92,10 +100,20 @@ jobs:
 
           This pull request will be automatically merged after successful checks.
 
-          **Updated:** $(date)"
+          ---
+          *Last updated on $(date)*"
 
           gh pr edit ${{ steps.check-pr.outputs.pr_number }} \
             --title "Auto PR: ${COMMIT_MESSAGE}" \
             --body "$pr_body"
+            
+          gh pr comment ${{ steps.check-pr.outputs.pr_number }} \
+            --body "🔄 **Updated with latest changes**
+            
+          **New commit:** [${COMMIT_HASH:0:7}](${COMMIT_URL})
+          **Message:** ${COMMIT_MESSAGE}
+          **Author:** ${COMMIT_AUTHOR}"
+            
+          echo "✅ Updated existing pull request #${{ steps.check-pr.outputs.pr_number }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
