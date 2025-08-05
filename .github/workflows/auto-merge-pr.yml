@@ -40,7 +40,7 @@ jobs:
             echo "❌ PR cannot be merged. State: $pr_state, Mergeable: $mergeable"
           fi
         env:
-          GH_TOKEN: ${{  secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Add comment before merging
         if: steps.pr-status.outputs.can_merge == 'true'
@@ -50,7 +50,7 @@ jobs:
             
           ✅ All checks passed - proceeding with automatic merge."
         env:
-          GH_TOKEN: ${{  secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Auto-merge PR
         if: steps.pr-status.outputs.can_merge == 'true'
@@ -64,7 +64,7 @@ jobs:
           echo "✅ Successfully merged PR #${{ github.event.pull_request.number }}"
           echo "📝 Dev branch preserved for continued development"
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN || secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Handle merge failure
         if: failure() || steps.pr-status.outputs.can_merge == 'false'
@@ -79,4 +79,4 @@ jobs:
 
           Please review and merge manually when ready."
         env:
-          GH_TOKEN: ${{  secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
