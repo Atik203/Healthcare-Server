@@ -1,0 +1,31 @@
+{
+  "name": "healthcare-server",
+  "packageManager": "yarn@4.9.2",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "type-check": "tsc --noEmit",
+    "migrate": "prisma migrate dev --name init",
+    "generate": "prisma generate",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts,.tsx",
+    "reset": "prisma migrate reset --force && npm run generate && npm run build"
+  },
+  "devDependencies": {
+    "@types/cors": "^2",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.2.0",
+    "prisma": "^6.13.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.13.0",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
