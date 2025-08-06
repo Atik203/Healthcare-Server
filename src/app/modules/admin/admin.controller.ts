@@ -51,8 +51,34 @@ const getAdminById = async (req: Request, res: Response) => {
   }
 };
 
+const updateAdminById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    const updatedAdmin = await adminService.updateAdminById(id, data);
+    if (!updatedAdmin) {
+      return res.status(404).json({
+        status: "error",
+        message: "Admin not found",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      message: "Admin updated successfully",
+      data: updatedAdmin,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to update admin",
+      error: error instanceof Error ? error.message : "Internal Server Error",
+    });
+  }
+};
+
 export const adminController = {
   getAllAdmin,
   getAdminById,
+  updateAdminById,
   // Add other admin-related methods here
 };
