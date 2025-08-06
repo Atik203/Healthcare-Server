@@ -8,8 +8,6 @@
     "type-check": "tsc --noEmit",
     "migrate": "prisma migrate dev --name init",
     "generate": "prisma generate",
-    "format": "prettier --write .",
-    "lint": "eslint . --ext .ts,.tsx",
     "reset": "prisma migrate reset --force && npm run generate && npm run build",
     "studio": "prisma studio"
   },
