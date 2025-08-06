@@ -17,24 +17,6 @@ const getAllAdmin = async (params: any) => {
     });
   }
 
-  if (Object.keys(filterData).length > 0) {
-    conditions.push({
-      AND: Object.entries(filterData).map(([key, value]) => ({
-        [key]: {
-          equals: value,
-        },
-      })),
-    });
-  }
-
-  const result = await prisma.admin.findMany({
-    where: {
-      OR: conditions,
-    },
-  });
-  return result;
-};
-
 export const adminService = {
   getAllAdmin,
 };
