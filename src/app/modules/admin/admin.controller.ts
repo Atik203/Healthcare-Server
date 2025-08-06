@@ -25,7 +25,34 @@ const getAllAdmin = async (req: Request, res: Response) => {
   }
 };
 
+const getAdminById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const admin = await adminService.getAdminById(id);
+
+    if (!admin) {
+      return res.status(404).json({
+        status: "error",
+        message: "Admin not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Admin retrieved successfully",
+      data: admin,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to retrieve admin",
+      error: error instanceof Error ? error.message : "Internal Server Error",
+    });
+  }
+};
+
 export const adminController = {
   getAllAdmin,
+  getAdminById,
   // Add other admin-related methods here
 };
