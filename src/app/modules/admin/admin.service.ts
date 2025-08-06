@@ -17,14 +17,6 @@ const getAllAdmin = async (params: any) => {
     });
   }
 
-  const result = await prisma.admin.findMany({
-    where: {
-      OR: conditions,
-    },
-  });
-  return result;
-};
-
 export const adminService = {
   getAllAdmin,
 };
