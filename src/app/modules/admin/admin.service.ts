@@ -1,11 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../../../shared/prisma";
 import {
   paginationHelper,
   PaginationOptions,
 } from "../../helpers/paginationHelper";
 import { adminSearchableFields } from "./admin.constant";
-
-const prisma = new PrismaClient();
 
 const getAllAdmin = async (params: any, options: PaginationOptions) => {
   const conditions: any[] = [];
