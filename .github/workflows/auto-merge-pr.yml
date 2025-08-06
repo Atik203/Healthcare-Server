@@ -17,11 +17,36 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Wait before merging
         run: |
           echo "Waiting 10 seconds to allow any checks to start..."
           sleep 10
+
+      - name: Setup Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Update dev branch with main first
+        run: |
+          # Ensure we have the latest from both branches
+          git fetch origin main:main
+          git fetch origin dev:dev
+
+          # Checkout dev branch
+          git checkout dev
+
+          # Merge main into dev first to resolve any conflicts
+          git merge main -m "Merge main into dev to resolve conflicts before PR merge"
+
+          # Push the updated dev branch
+          git push origin dev
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Check PR status
         id: pr-status
@@ -57,8 +82,8 @@ jobs:
         run: |
           echo "Auto-merging PR #${{ github.event.pull_request.number }}"
 
-          # Merge the PR with squash and preserve the dev branch
-          gh pr merge ${{ github.event.pull_request.number }} --squash
+          # Merge the PR with rebase strategy to avoid conflicts
+          gh pr merge ${{ github.event.pull_request.number }} --rebase
             
           echo "✅ Successfully merged PR #${{ github.event.pull_request.number }}"
           echo "📝 Dev branch preserved for continued development"
