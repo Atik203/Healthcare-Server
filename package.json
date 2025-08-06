@@ -10,7 +10,8 @@
     "generate": "prisma generate",
     "format": "prettier --write .",
     "lint": "eslint . --ext .ts,.tsx",
-    "reset": "prisma migrate reset --force && npm run generate && npm run build"
+    "reset": "prisma migrate reset --force && npm run generate && npm run build",
+    "studio": "prisma studio"
   },
   "devDependencies": {
     "@types/cors": "^2",
