@@ -51,7 +51,9 @@ const getAllAdmin = async (params: any, options: PaginationOptions) => {
   const hasPrevPage = page > 1;
 
   return {
+
     meta: {
+
       page,
       limit,
       total,
