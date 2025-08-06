@@ -51,6 +51,7 @@ const getAdminById = async (req: Request, res: Response) => {
   }
 };
 
+
 const updateAdminById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -80,5 +81,6 @@ export const adminController = {
   getAllAdmin,
   getAdminById,
   updateAdminById,
+
   // Add other admin-related methods here
 };
