@@ -1,14 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../../../shared/prisma";
+import {
+  paginationHelper,
+  PaginationOptions,
+} from "../../helpers/paginationHelper";
+import { adminSearchableFields } from "./admin.constant";
 
-const prisma = new PrismaClient();
-
-const getAllAdmin = async (params: any) => {
-  const searchFields = ["name", "email"];
+const getAllAdmin = async (params: any, options: PaginationOptions) => {
   const conditions: any[] = [];
   const { searchTerm, ...filterData } = params;
+  const { sortBy, sortOrder, take, skip, page, limit } =
+    paginationHelper(options);
+
   if (searchTerm) {
     conditions.push({
-      OR: searchFields.map((field) => ({
+      OR: adminSearchableFields.map((field) => ({
         [field]: {
           contains: searchTerm,
           mode: "insensitive",
@@ -26,12 +31,36 @@ const getAllAdmin = async (params: any) => {
       })),
     });
   }
+
   const where = conditions.length > 0 ? { AND: conditions } : {};
+
+  // Get total count for pagination metadata
+  const total = await prisma.admin.count({ where });
+
   const admins = await prisma.admin.findMany({
     where,
+    take,
+    skip,
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
   });
 
-  return admins;
+  const totalPages = Math.ceil(total / limit);
+  const hasNextPage = page < totalPages;
+  const hasPrevPage = page > 1;
+
+  return {
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNextPage,
+      hasPrevPage,
+    },
+    data: admins,
+  };
 };
 
 export const adminService = {
