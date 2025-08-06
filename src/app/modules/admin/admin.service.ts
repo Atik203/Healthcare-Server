@@ -1,3 +1,4 @@
+import { Admin } from ".prisma/client";
 import prisma from "../../../shared/prisma";
 import {
   paginationHelper,
@@ -51,9 +52,7 @@ const getAllAdmin = async (params: any, options: PaginationOptions) => {
   const hasPrevPage = page > 1;
 
   return {
-
     meta: {
-
       page,
       limit,
       total,
@@ -73,7 +72,17 @@ const getAdminById = async (id: string) => {
   return admin;
 };
 
+const updateAdminById = async (id: string, data: Partial<Admin>) => {
+  const updatedAdmin = await prisma.admin.update({
+    where: { id },
+    data,
+  });
+
+  return updatedAdmin;
+};
+
 export const adminService = {
   getAllAdmin,
   getAdminById,
+  updateAdminById,
 };
