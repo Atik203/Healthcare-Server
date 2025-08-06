@@ -15,3 +15,24 @@ routes.forEach((route) => {
 });
 
 export default router;
+
+import { adminRoutes } from "../admin/admin.routes";
+
+const router = express.Router();
+
+const routes = [
+  {
+    path: "/user",
+    route: userRoutes,
+  },
+  {
+    path: "/admin",
+    route: adminRoutes,
+  },
+];
+
+routes.forEach((route) => {
+  router.use(route.path, route.route);
+});
+
+export default router;
