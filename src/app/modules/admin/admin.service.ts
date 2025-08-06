@@ -6,7 +6,7 @@ const getAllAdmin = async (params: any) => {
   const searchFields = ["name", "email"];
   const conditions: any[] = [];
   const { searchTerm, ...filterData } = params;
-  if (params.searchTerm) {
+  if (searchTerm) {
     conditions.push({
       OR: searchFields.map((field) => ({
         [field]: {
@@ -16,6 +16,23 @@ const getAllAdmin = async (params: any) => {
       })),
     });
   }
+
+  if (Object.keys(filterData).length > 0) {
+    conditions.push({
+      AND: Object.entries(filterData).map(([key, value]) => ({
+        [key]: {
+          equals: value,
+        },
+      })),
+    });
+  }
+  const where = conditions.length > 0 ? { AND: conditions } : {};
+  const admins = await prisma.admin.findMany({
+    where,
+  });
+
+  return admins;
+};
 
 export const adminService = {
   getAllAdmin,
