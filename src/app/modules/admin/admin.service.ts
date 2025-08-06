@@ -52,9 +52,7 @@ const getAllAdmin = async (params: any, options: PaginationOptions) => {
   const hasPrevPage = page > 1;
 
   return {
-
     meta: {
-
       page,
       limit,
       total,
@@ -75,6 +73,10 @@ const getAdminById = async (id: string) => {
 };
 
 const updateAdminById = async (id: string, data: Partial<Admin>) => {
+  await prisma.admin.findUniqueOrThrow({
+    where: { id },
+  });
+
   const updatedAdmin = await prisma.admin.update({
     where: { id },
     data,
@@ -87,4 +89,4 @@ export const adminService = {
   getAllAdmin,
   getAdminById,
   updateAdminById,
-}
+};
