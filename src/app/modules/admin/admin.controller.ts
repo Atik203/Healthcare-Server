@@ -9,10 +9,12 @@ const getAllAdmin = async (req: Request, res: Response) => {
     const options = pick(req.query, ["sortBy", "sortOrder", "limit", "page"]);
 
     const result = await adminService.getAllAdmin(filteredQuery, options);
+
     return res.status(200).json({
       status: "success",
       message: "Admins retrieved successfully",
-      data: result,
+      data: result.data,
+      pagination: result.pagination,
     });
   } catch (error) {
     return res.status(500).json({
