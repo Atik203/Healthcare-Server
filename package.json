@@ -2,9 +2,9 @@
   "name": "healthcare-server",
   "packageManager": "yarn@4.9.2",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "node api.js && ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node api.js && node dist/server.js",
     "type-check": "tsc --noEmit",
     "migrate": "prisma migrate dev --name init",
     "generate": "prisma generate",
