@@ -71,9 +71,6 @@ ehthumbs.db
 Thumbs.db
 
 # IDE
-.vscode/settings.json
-.vscode/launch.json
-.vscode/extensions.json
 # Keep tasks and snippets for team sharing
 !.vscode/tasks.json
 !.vscode/snippets/
