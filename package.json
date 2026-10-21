@@ -3,7 +3,7 @@
   "packageManager": "yarn@4.9.2",
   "scripts": {
     "dev": "node api.js && ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
+    "build": "node api.js && tsc",
     "start": "node api.js && node dist/server.js",
     "type-check": "tsc --noEmit",
     "migrate": "prisma migrate dev --name init",
